@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>RecipeGPT</title>
+    <style>
+        body {
+        background-color: #121212;
+        color: #f0f0f0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
+    textarea, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+    }
+    textarea {
+        height: 100px;
+        background: #1e1e1e;
+        color: white;
+    }
+    button {
+        background: #03DAC5;
+        color: black;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .container {
+        max-width: 650px;
+        width: 100%;
+        background: #1f1f1f;
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+    .step {
+        background-color: #2a2a2a;
+        padding: 14px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .step strong {
+        display: block;
+        font-size: 17px;
+        color: #03DAC5;
+        margin-bottom: 6px;
+    }
+
+        h2 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RecipeGPT 🍽️</h1>
+        <label for="ingredients">Enter Ingredients (comma-separated):</label>
+        <textarea id="ingredients" placeholder="E.g. rice, vegetables, spices"></textarea>
+        <button onclick="startGeneration()">Generate Recipe</button>
+        
+        <h2>Generated Recipe:</h2>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function startGeneration() {
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = ""; // clear old recipe
+
+            const ingredients = document.getElementById("ingredients").value;
+            if (!ingredients.trim()) {
+                alert("Please enter some ingredients.");
+                return;
+            }
+
+            const eventSource = new EventSource(`/stream?ingredients=${encodeURIComponent(ingredients)}`);
+
+           eventSource.onmessage = function(event) {
+    if (event.data.trim() !== "") {
+        const stepDiv = document.createElement("div");
+        stepDiv.classList.add("step");
+
+        // split into "Step X:" and text
+        const parts = event.data.split(":");
+        if (parts.length > 1) {
+            stepDiv.innerHTML = `<strong>${parts[0]}:</strong> ${parts.slice(1).join(":").trim()}`;
+        } else {
+            stepDiv.textContent = event.data;
+        }
+
+        outputDiv.appendChild(stepDiv);
+    }
+};
+
+
+            eventSource.onerror = function() {
+                eventSource.close();
+            };
+        }
+    </script>
+</body>
+</html>

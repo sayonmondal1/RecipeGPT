@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecipeGPT</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: url("{{ url_for('static', filename='images/image3.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(0, 0, 0, 0.6);
+      /* add transparency for readability */
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #6a5acd;
+      /* purple-blue for logo */
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav ul li {
+      display: inline;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #03dac5;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      min-height: 100vh;
+      /* full height */
+      background: rgba(0, 0, 0, 0.5);
+      /* overlay for contrast */
+    }
+
+    .hero-text h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #f0f0f0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #6a5acd;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 25px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #03dac5;
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Recipe<span style="color:yellow;">GPT</span></div>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('about') }}">About</a></li>
+        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        <li><a href="#">Account</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Generate recipe <br>Right Now!</h1>
+      <p>No more wasting time searching endlessly<br>
+        just enter your ingredients,
+        and our system suggests quick, healthy, and creative meal ideas!</p>
+      <a href="{{ url_for('generator') }}" class="btn">Generate Recipe ➝</a>
+    </div>
+  </section>
+</body>
+
+</html>
