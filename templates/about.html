@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About RecipeGPT</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-[Poppins]">
+
+  <!-- Navbar -->
+  <header>
+    <div class="logo">Recipe<span style="color:yellow;">GPT</span></div>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+        <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>
+        <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+        <li><a href="{{ url_for('contact') }}" class="{% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
+
+        {% if session.get('username') %}
+          <li class="account">Welcome, <span class="username">{{ session['username'] }}</span> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+          </li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <div class="nav-spacer"></div>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-text animate-fadeInUp">
+      <h2>About RecipeGPT</h2>
+      <p>
+        <b>RecipeGPT</b> is a smart recipe generation application that helps you
+        discover delicious recipes based on the ingredients you already have at home.
+        No more wasting time searching endlessly—just enter your ingredients, and our
+        system suggests quick, healthy, and creative meal ideas!
+      </p>
+      <p>
+        Designed for food lovers, students, and busy people, this project reduces food
+        waste, saves time, and makes cooking fun again.
+      </p>
+      <button onclick="learnMore()">Learn More</button>
+    </div>
+
+    <div class="about-image animate-zoomIn">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836" alt="Recipe Cooking">
+    </div>
+  </section>
+
+  <!-- Dark Section (after About) -->
+  <section class="after-about flex items-center justify-center text-white text-xl font-semibold tracking-wide">
+    <p class="animate-fadeInUp">Cooking Smarter, Wasting Less, Living Better ✨</p>
+  </section>
+
+</body>
+</html>

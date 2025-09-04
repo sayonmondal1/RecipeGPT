@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Services - RecipeGPT</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+</head>
+<body>
+
+<!-- Navbar -->
+<header>
+  <div class="logo">Recipe<span style="color:yellow;">GPT</span></div>
+  <nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('services') }}" class="active">Services</a></li>
+      <li><a href="{{ url_for('about') }}">About</a></li>
+      <li><a href="{{ url_for('contact') }}">Contact</a></li>
+      {% if session.get('username') %}
+        <li><span class="account">Welcome, <span class="username">{{ session['username'] }}</span> | <a href="{{ url_for('logout') }}">Logout</a></span></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</header>
+
+<!-- Spacer to avoid overlap -->
+<div class="nav-spacer"></div>
+
+<section class="services-container">
+  <h2 class="section-title">Our Services</h2>
+  <div class="services-grid">
+    {% set services = [
+      {'title':'Custom Recipes','img':'static/images/cr.png'},
+      {'title':'Diet Plans','img':'static/images/dp.png'},
+      {'title':'Cooking Tips','img':'static/images/ct.png'},
+      {'title':'Ingredient Suggestions','img':'static/images/is.png'},
+      {'title':'Meal Planning','img':'static/images/mp.png'},
+      {'title':'Online Support','img':'static/images/os2.png'}
+    ] %}
+
+    {% for service in services %}
+    <div class="service-card fade-in hover-scale">
+      <img src="{{ service.img }}" alt="{{ service.title }}">
+      <h3>{{ service.title }}</h3>
+      <button class="btn read-more" data-topic="{{ service.title }}">READ MORE</button>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="serviceModal" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content fade-up">
+    <button class="modal-close" aria-label="Close">&times;</button>
+    <div class="modal-header">
+      <h3 id="modalTitle">Service</h3>
+    </div>
+    <div class="modal-body">
+      <div class="spinner"></div>
+      <p class="loading-text">Fetching information...</p>
+
+      <div id="modalResult" class="result hidden">
+        <p id="modalDescription" class="description"></p>
+        <ol id="modalSteps" class="steps"></ol>
+      </div>
+      <div id="modalError" class="error hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Helpers
+  const stripSymbols = (txt) => (txt || "").replace(/[\*\#\-]+/g, "").trim();
+
+  // Split content into description + steps
+  function parseContent(raw) {
+    const clean = stripSymbols(raw);
+    const lines = clean.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const isStep = (l) => /^\d+[\.\)]\s+/.test(l);
+
+    let descLines = [];
+    let steps = [];
+    let inSteps = false;
+
+    for (const line of lines) {
+      if (!inSteps && isStep(line)) {
+        inSteps = true;
+      }
+      if (!inSteps) {
+        descLines.push(line);
+      } else {
+        steps.push(line.replace(/^\d+[\.\)]\s+/, "").trim());
+      }
+    }
+
+    const description = descLines.join(" ").trim();
+    if (steps.length === 0 && lines.length > 0) {
+      const afterDesc = lines.slice(descLines.length);
+      steps = afterDesc.length ? afterDesc : lines;
+    }
+    return { description: description || "Here are some helpful details:", steps: steps.slice(0, 20) };
+  }
+
+  // Modal logic
+  const modal = document.getElementById('serviceModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalResult = document.getElementById('modalResult');
+  const modalDescription = document.getElementById('modalDescription');
+  const modalSteps = document.getElementById('modalSteps');
+  const modalError = document.getElementById('modalError');
+  const closeBtn = document.querySelector('.modal-close');
+  const backdrop = document.querySelector('.modal-backdrop');
+
+  function openModal(title) {
+    modalTitle.textContent = title;
+    modal.classList.remove('hidden');
+    modal.classList.add('show');
+    document.body.style.overflow = "auto"; // ✅ allow scrolling behind modal
+
+    document.querySelector('.spinner').classList.remove('hidden');
+    document.querySelector('.loading-text').classList.remove('hidden');
+    modalResult.classList.add('hidden');
+    modalError.classList.add('hidden');
+    modalError.textContent = '';
+    modalDescription.textContent = '';
+    modalSteps.innerHTML = '';
+  }
+
+  function closeModal() {
+    modal.classList.remove('show');
+    setTimeout(() => modal.classList.add('hidden'), 180);
+    document.body.style.overflow = "auto"; // restore scroll
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  document.querySelectorAll('.read-more').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const topic = e.currentTarget.dataset.topic;
+      openModal(topic);
+
+      try {
+        const res = await fetch("{{ url_for('service_info_json') }}", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic })
+        });
+        const data = await res.json();
+
+        document.querySelector('.spinner').classList.add('hidden');
+        document.querySelector('.loading-text').classList.add('hidden');
+
+        if (!res.ok || data.error) {
+          modalError.textContent = data.error || "Something went wrong.";
+          modalError.classList.remove('hidden');
+          return;
+        }
+
+        const { description, steps } = parseContent(data.content);
+        modalDescription.textContent = description;
+        modalSteps.innerHTML = "";
+        steps.forEach((s) => {
+          const li = document.createElement('li');
+          li.textContent = s;
+          modalSteps.appendChild(li);
+        });
+        modalResult.classList.remove('hidden');
+      } catch (err) {
+        document.querySelector('.spinner').classList.add('hidden');
+        document.querySelector('.loading-text').classList.add('hidden');
+        modalError.textContent = "Network error while fetching content.";
+        modalError.classList.remove('hidden');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

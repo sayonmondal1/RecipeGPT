@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RecipeGPT - Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+  <!-- optional small animation helper (you can remove if you prefer pure CSS) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <div class="logo">Recipe<span style="color:yellow;">GPT</span></div>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+        <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>
+        <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+        <li><a href="{{ url_for('contact') }}" class="{% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
+
+        <!-- User account section -->
+        {% if session.get('username') %}
+          <li class="account">Welcome, <span class="username">{{ session['username'] }}</span> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+          </li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <!-- spacer to avoid fixed header overlap -->
+  <div class="nav-spacer" aria-hidden="true"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-text animate__animated animate__fadeInDown">
+      <h1>Generate recipe <br>Right Now !</h1>
+      <p>No more wasting time searching endlessly,<br>
+         Just enter your ingredients,
+         and our system suggests quick, healthy, and creative meal ideas !</p>
+
+      <div class="cta">
+        <a href="{{ url_for('generator') }}" class="btn">Generate Recipe ➝</a>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

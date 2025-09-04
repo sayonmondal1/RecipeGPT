@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact - RecipeGPT</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+</head>
+<body>
+
+  <!-- Header / Navbar (structure kept compatible with your other pages) -->
+  <header>
+    <div class="container">
+      <div class="logo">Recipe<span class="logo-accent">GPT</span></div>
+
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+          <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>
+          <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+          <li><a href="{{ url_for('contact') }}" class="{% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
+
+          {% if session.get('username') %}
+            <li class="account">
+              <span class="welcome">Welcome, <span class="username">{{ session['username'] }}</span></span>
+              <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </li>
+          {% else %}
+            <li class="auth-links">
+              <a href="{{ url_for('login') }}" class="btn-login">Login</a>
+              <a href="{{ url_for('signup') }}" class="btn-signup">Sign Up</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- spacer to avoid fixed header overlap (height matches header) -->
+  <div class="nav-spacer" aria-hidden="true"></div>
+
+  <!-- Optional: replace animated gradient below with a muted video. See the commented video snippet inside CSS. -->
+
+  <!-- Contact section -->
+  <main class="contact-section">
+    <div class="contact-card">
+      <h2>Contact Us</h2>
+      <p class="sub">Have questions or suggestions? Fill out the form below and we'll get back to you.</p>
+
+      <form id="contactForm" class="contact-form" novalidate>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
+        <input type="email" id="email" name="email" placeholder="Your email" required>
+        <textarea id="message" name="message" rows="5" placeholder="Your message" required></textarea>
+
+        <div class="form-row">
+          <button type="submit" class="submit-btn">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // simple client-side form UX
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      // you can hook this up to your API endpoint later
+      alert('Thanks, ' + name + '! Your message has been received.');
+      this.reset();
+    });
+
+    // remove default focus outline and add subtle focus style
+    document.addEventListener('focusin', (e) => {
+      if (e.target.matches('a, button')) e.target.style.outline = 'none';
+    });
+  </script>
+
+</body>
+</html>

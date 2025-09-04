@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RecipeGPT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index1.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>RecipeGPT 🍽️</h1>
+        <label for="ingredients">Enter Ingredients (comma-separated):</label>
+        <textarea id="ingredients" placeholder="E.g. rice, vegetables, spices"></textarea>
+        <button onclick="generateRecipe()">Generate Recipe</button>
+        
+        <h2>Generated Recipe:</h2>
+        <div id="output">Your recipe will appear here...</div>
+    </div>
+
+    <script>
+        function generateRecipe() {
+            const ingredients = document.getElementById("ingredients").value.trim();
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = ""; // clear old recipe
+
+            if (!ingredients) {
+                outputDiv.innerText = "⚠️ Please enter some ingredients.";
+                return;
+            }
+
+            outputDiv.innerText = "⏳ Generating recipe...\n";
+
+            fetch(`/stream?ingredients=${encodeURIComponent(ingredients)}`)
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let recipe = "";
+
+                    function read() {
+                        reader.read().then(({ done, value }) => {
+                            if (done) return;
+                            recipe += decoder.decode(value, { stream: true });
+
+                            // Split recipe into steps by new line and remove #, -, *
+                            outputDiv.innerHTML = "";
+                            recipe.split("\n").forEach(line => {
+                                if (line.trim() === "") return;
+
+                                // Remove all #, -, * characters
+                                const cleanLine = line.replace(/[\#\-\*]/g, '').trim();
+
+                                const stepDiv = document.createElement("div");
+                                stepDiv.classList.add("step");
+
+                                const parts = cleanLine.split(":");
+                                if (parts.length > 1) {
+                                    stepDiv.innerHTML = `<strong>${parts[0]}:</strong> ${parts.slice(1).join(":").trim()}`;
+                                } else {
+                                    stepDiv.textContent = cleanLine;
+                                }
+
+                                outputDiv.appendChild(stepDiv);
+                            });
+
+                            read();
+                        });
+                    }
+
+                    read();
+                })
+                .catch(err => {
+                    outputDiv.innerText = "❌ Error generating recipe.";
+                    console.error(err);
+                });
+        }
+    </script>
+</body>
+</html>
