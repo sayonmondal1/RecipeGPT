@@ -1,0 +1,26 @@
+/* Background overlay image (optional) */
+.bg-overlay {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+              url("{{ url_for('static', filename='images/back1.png') }}") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Glow pulse animation */
+.glow-pulse {
+  animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+  to   { box-shadow: 0 0 20px rgba(255, 255, 255, 1); }
+}
+
+/* Fade in animation using Tailwind */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 1s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

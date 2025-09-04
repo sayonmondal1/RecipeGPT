@@ -1,0 +1,263 @@
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Body: animated multi-color gradient (not black) */
+body {
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  min-height: 100vh;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+
+  /* animated gradient (smooth, subtle) */
+  background: linear-gradient(270deg, #ffd6e8, #a6c1ee, #fbc2eb, #c2f9ff);
+  background-size: 800% 800%;
+  animation: gradientBG 16s ease infinite;
+  overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ---------- Header / Navbar (matches home.css sizing & spacing) ---------- */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;                 /* matches home.css */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  pointer-events: auto;
+}
+
+/* inner container so widths match other pages */
+header .container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;           /* matches home.css */
+  gap: 20px;
+  /* subtle glass look so navbar sits nicely on animated bg */
+  background: rgba(255,255,255,0.03);
+  background-color: #0A043C;
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  border-radius: 10px;
+}
+
+/* Logo (size matches home.css) */
+.logo {
+  font-size: 26px;              /* matched with home.css */
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  user-select: none;
+}
+.logo-accent { color: #ffd6e8; } /* subtle accent color for the 'GPT' part */
+
+/* Nav list (gaps and alignment match home.css) */
+nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 22px;                    /* matches home.css */
+  margin: 0;
+  padding: 0;
+}
+
+/* Links - no underline, same padding & font-weight */
+nav ul li a {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 6px 8px;
+  transition: color 0.25s ease, transform 0.12s ease;
+  display: inline-block;
+  border-radius: 6px;
+  outline: none;
+}
+
+/* hover style (gentle lift) */
+nav ul li a:hover {
+  color: #fff3c9; /* a warm highlight */
+  transform: translateY(-1px);
+}
+
+/* Active link styling - similar highlight */
+nav ul li a.active {
+  color: #ffd6e8;               /* consistent highlight color */
+  font-weight: 700;
+}
+
+/* prevent the focus "box" that was appearing around links on some browsers */
+nav ul li a:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Auth / account items */
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.username {
+  color: #ffd6e8;
+  font-weight: 800;
+}
+
+/* Buttons inside nav */
+.btn-login, .btn-signup, .btn-logout {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: transform .12s ease, background .12s ease;
+  border: none;
+  cursor: pointer;
+}
+
+/* subtle variants */
+.btn-login {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+.btn-login:hover { transform: translateY(-1px); }
+
+.btn-signup {
+  background: rgba(255,255,255,0.18);
+  color: #111827;
+}
+.btn-signup:hover { transform: translateY(-1px); }
+
+.btn-logout {
+  background: #ffd6e8;
+  color: #614385;
+  padding: 7px 10px;
+  border-radius: 8px;
+}
+.btn-logout:hover { transform: translateY(-1px); }
+
+/* Spacer underneath header */
+.nav-spacer { height: 72px; }   /* same as header height so content won't overlap */
+
+/* ---------- Contact section (card center) ---------- */
+.contact-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  min-height: calc(100vh - 72px);
+}
+
+/* card */
+.contact-card {
+  width: 100%;
+  max-width: 720px;
+  background: rgba(255,255,255,0.06);
+  background-color: #0A043C;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(12, 16, 22, 0.25);
+  backdrop-filter: blur(8px);
+  animation: cardIn 0.7s cubic-bezier(.2,.9,.2,1);
+}
+
+/* small card animation */
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px) scale(.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.contact-card h2 {
+  margin-bottom: 6px;
+  font-size: 1.8rem;
+  color: #fff;
+}
+.contact-card .sub {
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 18px;
+  font-size: 0.98rem;
+}
+
+/* form controls */
+.contact-form {
+  display: grid;
+  gap: 12px;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.15);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease, transform .12s ease;
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder { color: rgba(255,255,255,0.65); }
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: rgba(255,214,232,0.9);
+  box-shadow: 0 6px 18px rgba(255,214,232,0.06);
+  transform: translateY(-1px);
+}
+
+/* submit button */
+.submit-btn {
+  background: linear-gradient(90deg, #ffd6e8, #f3a7c2);
+  color: #614385;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 900;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+.submit-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(101,71,115,0.12);
+}
+
+/* small-screen adjustments */
+@media (max-width: 900px) {
+  header .container { padding: 12px 22px; }
+  .nav-spacer { height: 64px; }
+  nav ul { gap: 14px; }
+  .contact-card { padding: 22px; }
+}
+@media (max-width: 520px) {
+  nav ul { gap: 10px; font-size: 14px; }
+  .logo { font-size: 22px; }
+  .contact-card { margin: 0 12px; }
+}
+
+/* ======================
+   OPTIONAL: Video background example
+   - If you want a muted looping background video instead of the animated gradient:
+   1) Add a <video id="bgVideo" autoplay muted loop playsinline> in the HTML (just under <body>) with the source file.
+   2) Replace body background rules with:
+      #bgVideo { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+   3) Keep header background slightly translucent (as above) so content remains readable.
+   NOTE: Using video increases page weight and bandwidth—use a compressed, short looping clip for best UX.
+   ====================== */
